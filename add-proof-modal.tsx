@@ -11,14 +11,7 @@ import { Link, AlertCircle, CheckCircle2, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { addProofSchema, type AddProofFormData } from "./lib/validation"
 import { uploadFileToSupabase } from "./lib/supabase-client"
 import { insertProofRecord, type ProofSubmission } from "./lib/supabase-actions"
@@ -57,6 +50,11 @@ export default function Component() {
 
   const watchedFile = watch("file")
   const watchedProofLink = watch("proofLink")
+
+  const handleExecuteClick = () => {
+    console.log("Execute button clicked!")
+    setIsOpen(true)
+  }
 
   const handleFileChange = (file: File | undefined) => {
     setValue("file", file, { shouldValidate: true })
@@ -154,6 +152,7 @@ export default function Component() {
   }
 
   const handleClose = () => {
+    console.log("Closing dialog")
     setIsOpen(false)
     setSubmissionResult(null)
     reset()
@@ -163,15 +162,18 @@ export default function Component() {
     setSubmissionResult(null)
   }
 
+  console.log("Component render - isOpen:", isOpen)
+
   return (
     <DndProvider backend={HTML5Backend}>
+      {/* Main Execute button */}
+      <Button onClick={handleExecuteClick} variant="outline" className="shadow-sm cursor-pointer">
+        <Play className="mr-2 size-4" />
+        Execute
+      </Button>
+
+      {/* Dialog without DialogTrigger */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline" className="shadow-sm cursor-pointer">
-            <Play className="mr-2 size-4" />
-            Execute
-          </Button>
-        </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           {submissionResult ? (
             // Success view
